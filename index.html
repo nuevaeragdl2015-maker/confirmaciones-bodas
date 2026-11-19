@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f0eb">
+<title>Generador · Confirmación de Boda</title>
+<style>
+:root{--ink:#292522;--muted:#746b64;--line:#e7ddd3;--accent:#9b806c;--accent-dark:#765d4c;--green:#287c52;--red:#a74747}
+*{box-sizing:border-box}
+body{margin:0;background:#f1ece7;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 48px}
+header{margin-bottom:22px}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--muted);font-weight:700}
+h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(28px,4vw,40px);margin:8px 0}
+.intro{color:var(--muted);line-height:1.55;margin:0;max-width:680px}
+.layout{display:grid;grid-template-columns:minmax(300px,.95fr) minmax(320px,1.05fr);gap:20px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 28px #38271a0b}
+.panel h2{font:400 23px Georgia,serif;margin:0 0 18px}
+.field{margin:0 0 16px}
+label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}
+input{width:100%;border:1px solid #d9cec4;border-radius:10px;padding:12px 13px;background:#fff;color:var(--ink);outline:none}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #9b806c20}
+.hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
+.color-row{display:flex;align-items:center;gap:12px}
+input[type=color]{width:48px;height:42px;padding:3px;cursor:pointer}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:10px;padding:13px 17px;font-weight:700;cursor:pointer;transition:.15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(.97)}
+.primary{background:var(--accent-dark);color:white}
+.secondary{background:#eee8e2;color:#433a34}
+.preview-panel{position:sticky;top:18px}
+.preview-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.preview-label span{font-size:12px;color:var(--muted)}
+.preview-stage{background:linear-gradient(135deg,#eee5dc,#f8f4ef);border-radius:15px;padding:24px;display:flex;justify-content:center;min-height:500px;align-items:center}
+.invite{--card-accent:var(--accent);width:100%;max-width:410px;background:linear-gradient(145deg,#fffdfa,#f4ece4);border:1px solid #d9cabb;border-radius:8px;padding:38px 26px;text-align:center;box-shadow:0 14px 35px #38271a18;position:relative;overflow:hidden}
+.invite:before{content:"";position:absolute;inset:10px;border:1px solid color-mix(in srgb,var(--card-accent),transparent 55%);pointer-events:none}
+.invite .topline{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#887767}
+.invite .event{font:italic 31px Georgia,serif;color:var(--card-accent);margin:18px 0 8px}
+.invite .names{font:400 28px Georgia,serif;line-height:1.2;margin:0 0 17px;overflow-wrap:anywhere}
+.invite .message{font:14px/1.6 Georgia,serif;color:#665c54;margin:0 auto 22px;max-width:290px}
+.invite .question{font:italic 22px Georgia,serif;margin:0 0 17px}
+.preview-button{display:block;width:100%;padding:13px 10px;background:var(--card-accent);color:white;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:700}
+.invite .foot{font-size:10px;color:#8b8179;margin-top:18px}
+.linkbox{margin-top:18px;padding:15px;background:#f8f5f1;border:1px solid var(--line);border-radius:12px;display:none}
+.linkbox.show{display:block}
+.linkbox label{margin-bottom:8px}
+.linkline{display:flex;gap:8px}
+.linkline input{font-size:12px;min-width:0}
+.copy{white-space:nowrap;background:#292522;color:#fff;border:0;border-radius:9px;padding:0 14px;font-weight:700;cursor:pointer}
+.status{font-size:12px;color:var(--green);margin-top:8px;min-height:16px}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:15px}
+.guest-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;background:linear-gradient(135deg,#eee5dc,#faf7f3)}
+.guest-card{width:100%;max-width:470px;background:#fffdfa;border:1px solid #d9cabb;border-radius:12px;padding:34px 25px;box-shadow:0 15px 45px #38271a18;text-align:center;position:relative}
+.guest-card:before{content:"";position:absolute;inset:10px;border:1px solid #e4d8cc;pointer-events:none}
+.guest-inner{position:relative}
+.guest-event{font:italic 31px Georgia,serif;margin:13px 0 5px}
+.guest-names{font:28px Georgia,serif;line-height:1.2;margin:0 0 15px;overflow-wrap:anywhere}
+.guest-desc{font:14px/1.6 Georgia,serif;color:#665c54;margin:0 auto 22px;max-width:330px}
+.guest-card form{text-align:left;margin-top:20px}
+.guest-card label{text-align:left}
+.guest-card .field{margin-bottom:14px}
+.guest-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.yes{background:var(--green);color:#fff}.no{background:var(--red);color:#fff}
+.guest-foot{font-size:11px;color:#8b8179;margin-top:20px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.preview-panel{position:static}.preview-stage{min-height:420px}}
+@media(max-width:460px){.wrap{padding:20px 12px 35px}.panel{padding:17px}.preview-stage{padding:15px}.invite{padding:32px 20px}.guest-card{padding:30px 18px}.linkline{flex-direction:column}.copy{padding:12px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+const app=document.getElementById('app');
+const params=new URLSearchParams(location.search);
+const guestMode=params.get('modo')==='invitado';
+const DEFAULT_MESSAGE='Nos encantaría compartir contigo el día más especial de nuestras vidas.';
+function cleanPhone(v){return (v||'').replace(/\D/g,'')}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function showGuest(){
+const data={telefono:params.get('tel')||'',nombres:params.get('nombres')||'',color:params.get('color')||'#9b806c',mensaje:params.get('mensaje')||DEFAULT_MESSAGE};
+document.documentElement.style.setProperty('--accent',data.color);
+app.innerHTML=`<main class="guest-shell"><section class="guest-card"><div class="guest-inner">
+<div class="eyebrow">Estás cordialmente invitado</div>
+<div class="guest-event">¡Nos casamos!</div>
+<h1 class="guest-names">${escapeHtml(data.nombres)}</h1>
+<p class="guest-desc">${escapeHtml(data.mensaje)}</p>
+<div class="eyebrow">¿Nos acompañas?</div>
+<form id="rsvp">
+<div class="field"><label for="guestName">Tu nombre</label><input id="guestName" name="nombre" placeholder="Escribe tu nombre" required maxlength="90"></div>
+<div class="field"><label for="guestCount">¿Cuántas personas asistirán?</label><input id="guestCount" name="personas" type="number" min="1" max="30" value="1" required></div>
+<div class="guest-buttons">
+<button class="btn yes" type="button" id="yesBtn">Sí, asistiré</button>
+<button class="btn no" type="button" id="noBtn">No podré asistir</button>
+</div>
+</form>
+<div class="guest-foot">Gracias por tomarte un momento para confirmar.</div>
+</div></section></main>`;
+document.getElementById('yesBtn').onclick=()=>send(true);
+document.getElementById('noBtn').onclick=()=>send(false);
+function send(yes){
+const name=document.getElementById('guestName').value.trim();
+const count=document.getElementById('guestCount').value;
+if(!name){alert('Por favor escribe tu nombre.');document.getElementById('guestName').focus();return}
+if(yes&&(!count||Number(count)<1||Number(count)>30)){alert('Indica cuántas personas asistirán (máximo 30).');return}
+const phone=cleanPhone(data.telefono);
+if(phone.length<10){alert('El número de WhatsApp de confirmación no es válido.');return}
+const message=yes
+?`Confirmo asistencia a la boda de ${data.nombres}.\nNombre: ${name}\nNúmero de personas: ${count}`
+:`Gracias por la invitación a la boda de ${data.nombres}.\nMi nombre es: ${name}.\nLamentablemente no podré asistir.`;
+location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(message);
+}
+}
+function showBuilder(){
+app.innerHTML=`<div class="wrap">
+<header><div class="eyebrow">Francisco Ávalos Fotografía · Herramienta para eventos</div><h1>Confirmación de asistencia · Bodas</h1><p class="intro">Generador exclusivo para bodas. Personaliza los datos, revisa la previsualización y crea el enlace para colocar en Canva.</p></header>
+<div class="layout">
+<section class="panel">
+<h2>Datos de la boda</h2>
+<div class="field"><label for="phone">Teléfono de WhatsApp</label><input id="phone" type="tel" placeholder="Ej. 523312345678" inputmode="tel"><div class="hint">Incluye código de país. Para México, comienza con 52. Escribe solo números, sin +, espacios ni guiones.</div></div>
+<div class="field"><label for="names">Nombres de los novios</label><input id="names" placeholder="Ej. Ana y Luis" maxlength="120"></div>
+<div class="field"><label for="message">Mensaje para los invitados</label><input id="message" value="${DEFAULT_MESSAGE}" maxlength="170"></div>
+<div class="field"><label for="color">Color principal del diseño</label><div class="color-row"><input id="color" type="color" value="#9b806c"><span class="hint">Adapta el tono al diseño de tu invitación.</span></div></div>
+<div class="actions"><button class="btn primary" id="generate">Generar enlace</button><button class="btn secondary" id="reset" type="button">Limpiar</button></div>
+<div class="linkbox" id="linkbox"><label for="generated">Enlace para colocar en Canva</label><div class="linkline"><input id="generated" readonly><button class="copy" id="copy">Copiar</button></div><div class="status" id="status"></div><p class="note">El enlace abre la página para tus invitados. Al confirmar, WhatsApp se abrirá con el mensaje preparado: “Confirmo asistencia a la boda de [nombres de los novios]”.</p></div>
+</section>
+<section class="panel preview-panel">
+<div class="preview-label"><h2 style="margin:0">Previsualización</h2><span>Vista aproximada para celular</span></div>
+<div class="preview-stage"><div class="invite" id="preview">
+<div class="topline">Estás cordialmente invitado</div>
+<div class="event">¡Nos casamos!</div>
+<div class="names" id="pNames">Nombres de los novios</div>
+<p class="message" id="pMessage">${DEFAULT_MESSAGE}</p>
+<div class="question">¿Nos acompañas?</div>
+<div class="preview-button">CONFIRMAR ASISTENCIA</div>
+<div class="foot">Gracias por tomarte un momento para confirmar.</div>
+</div></div>
+<p class="note">Los nombres que escribas aparecerán tanto en la invitación como en el mensaje de confirmación de WhatsApp.</p>
+</section>
+</div></div>`;
+const $=id=>document.getElementById(id);
+function update(){
+$('pNames').textContent=$('names').value.trim()||'Nombres de los novios';
+$('pMessage').textContent=$('message').value.trim()||DEFAULT_MESSAGE;
+$('preview').style.setProperty('--card-accent',$('color').value);
+}
+['names','message','color'].forEach(id=>$(id).addEventListener('input',update));
+$('generate').onclick=()=>{
+const phone=cleanPhone($('phone').value),names=$('names').value.trim();
+if(phone.length<10){alert('Escribe un teléfono de WhatsApp válido, incluyendo el código de país.');$('phone').focus();return}
+if(!names){alert('Escribe los nombres de los novios.');$('names').focus();return}
+const data=new URLSearchParams({modo:'invitado',tel:phone,nombres:names,color:$('color').value,mensaje:$('message').value.trim()||DEFAULT_MESSAGE});
+const url=location.href.split('?')[0].split('#')[0]+'?'+data.toString();
+$('generated').value=url;$('linkbox').classList.add('show');$('status').textContent='Enlace generado. Haz una prueba antes de compartirlo.';
+};
+$('copy').onclick=async()=>{
+const field=$('generated');field.select();field.setSelectionRange(0,field.value.length);
+try{await navigator.clipboard.writeText(field.value);$('status').textContent='¡Enlace copiado!';}
+catch(e){document.execCommand('copy');$('status').textContent='Enlace copiado.';}
+};
+$('reset').onclick=()=>{$('phone').value='';$('names').value='';$('message').value=DEFAULT_MESSAGE;$('color').value='#9b806c';$('linkbox').classList.remove('show');update()};
+update();
+}
+if(guestMode)showGuest();else showBuilder();
+})();
+</script>
+</body>
+</html>
